@@ -17,7 +17,7 @@
 </head>
 <body>
 <main class="app">
-  <header><div class="brand"><div class="logo">🚀</div><div><h1>乘法探險隊</h1><div class="sub">兩位數乘兩位數・小四數學</div></div></div><button class="sound" id="soundBtn" aria-pressed="true">🔊 聲音：開</button></header>
+  <header><div class="brand"><div class="logo">🚀</div><div><h1>乘法探險隊</h1><div class="sub">兩位數乘兩位數・小四數學</div></div></div><button class="sound" id="soundBtn" aria-pressed="false">🔇 聲音：關</button></header>
   <section class="screen" id="home"><h2>選擇你的探險路線</h2><p>每局約 3–5 分鐘。準備好，就按下你的挑戰！</p><div class="mode-grid">
     <button class="mode" data-mode="Y"><span class="emoji">🌱</span><h3>Y 新手挑戰</h3><p>一步一步學直式，認識十位和個位，還有乘數表支援。</p></button>
     <button class="mode" data-mode="C"><span class="emoji">⭐</span><h3>C 達人挑戰</h3><p>看懂每一步的意思，找出直式錯誤，再完成計算。</p></button>
@@ -34,7 +34,7 @@
   const sets={Y:[],C:[],H:[]};
   const randInt=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
   const makeSet=(minA,maxA,minB,maxB)=>{const out=[],seen=new Set();while(out.length<6){const pair=[randInt(minA,maxA),randInt(minB,maxB)],key=pair.join('x');if(!seen.has(key)){seen.add(key);out.push(pair)}}return out};
-  let mode='Y', index=0, step=0, correct=0, attempts=0, started=0, timer=null, seconds=180, sound=true, locked=false;
+  let mode='Y', index=0, step=0, correct=0, attempts=0, started=0, timer=null, seconds=180, sound=false, locked=false;
   const speak=t=>{if(sound&&'speechSynthesis'in window){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t))}};
   const shuffle=a=>a.sort(()=>Math.random()-.5);
   function show(which){[home,game,result].forEach(x=>x.classList.add('hide'));which.classList.remove('hide')}
