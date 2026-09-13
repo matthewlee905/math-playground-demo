@@ -1,0 +1,1233 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8e8">
+  <title>直式乘法小工房｜兩位數乘兩位數</title>
+  <style>
+    :root {
+      --ink: #243548;
+      --muted: #708092;
+      --paper: #fffdf8;
+      --cream: #fff8e8;
+      --orange: #f28a5b;
+      --orange-dark: #bd5f38;
+      --orange-soft: #fff0e7;
+      --teal: #2f9d8f;
+      --teal-dark: #23776d;
+      --teal-soft: #e8f7f3;
+      --blue: #4d83c4;
+      --blue-soft: #edf5ff;
+      --yellow: #ffd569;
+      --green: #65ad70;
+      --red: #d95f63;
+      --shadow: 0 22px 60px rgba(48, 66, 83, .13);
+      --cell: clamp(46px, 6.8vh, 58px);
+    }
+
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--cream); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+      background:
+        radial-gradient(circle at 10% 8%, rgba(255, 213, 105, .38) 0 110px, transparent 111px),
+        radial-gradient(circle at 92% 88%, rgba(107, 196, 184, .23) 0 150px, transparent 151px),
+        linear-gradient(145deg, #fff9eb, #f2f9ff);
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 4px solid rgba(77, 131, 196, .28); outline-offset: 2px; }
+
+    .screen { min-height: 100vh; }
+    .hidden { display: none !important; }
+
+    /* Start screen */
+    .start-screen {
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+      overflow: hidden;
+      position: relative;
+    }
+    .start-card {
+      width: min(900px, 100%);
+      background: rgba(255, 253, 248, .96);
+      border: 1px solid rgba(229, 209, 171, .8);
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      padding: clamp(25px, 5vw, 54px);
+      position: relative;
+      z-index: 1;
+    }
+    .start-card::after {
+      content: "×";
+      position: absolute;
+      right: 32px;
+      top: 18px;
+      color: rgba(242, 138, 91, .1);
+      font-size: 150px;
+      font-weight: 1000;
+      line-height: 1;
+      transform: rotate(8deg);
+      pointer-events: none;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--yellow);
+      color: #73511f;
+      font-size: 27px;
+      box-shadow: 0 4px 0 #ddb346;
+    }
+    .grade-pill {
+      margin-left: 4px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+    .hero-copy { position: relative; z-index: 1; max-width: 690px; }
+    .hero-copy h1 {
+      margin: 28px 0 12px;
+      font-size: clamp(35px, 6vw, 62px);
+      line-height: 1.13;
+      letter-spacing: -.045em;
+    }
+    .hero-copy h1 span { color: var(--orange); }
+    .hero-copy > p { color: var(--muted); line-height: 1.8; margin: 0; font-size: 16px; }
+    .route-strip {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      margin: 29px 0 27px;
+      padding: 16px;
+      border-radius: 20px;
+      background: #f8fbfc;
+      border: 1px solid #e4ecef;
+    }
+    .route-step { display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; font-weight: 850; }
+    .route-step b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; color: white; background: var(--teal); }
+    .route-arrow { color: #a9b5bd; font-weight: 900; }
+    .level-heading { margin: 0 0 12px; font-size: 16px; }
+    .level-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .level-card {
+      border: 2px solid #e7ecee;
+      border-radius: 18px;
+      background: white;
+      padding: 15px;
+      text-align: left;
+      min-height: 112px;
+      transition: transform .18s, border-color .18s, background .18s;
+    }
+    .level-card:hover { transform: translateY(-2px); }
+    .level-card.selected { border-color: var(--orange); background: var(--orange-soft); }
+    .level-card span { display: block; font-size: 27px; }
+    .level-card strong { display: block; margin: 5px 0 3px; font-size: 16px; }
+    .level-card small { color: var(--muted); line-height: 1.45; }
+    .start-actions { display: flex; align-items: center; gap: 17px; margin-top: 24px; }
+    .primary-button {
+      border: 0;
+      border-radius: 16px;
+      padding: 14px 22px;
+      color: white;
+      background: var(--orange);
+      box-shadow: 0 6px 0 var(--orange-dark);
+      font-weight: 900;
+      font-size: 17px;
+      transition: transform .16s, box-shadow .16s;
+    }
+    .primary-button:hover { transform: translateY(2px); box-shadow: 0 4px 0 var(--orange-dark); }
+    .primary-button:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--orange-dark); }
+    .start-note { color: var(--muted); font-size: 13px; }
+
+    /* Practice shell */
+    .practice-screen { padding: 10px clamp(10px, 2vw, 24px); }
+    .topbar {
+      width: min(1240px, 100%);
+      margin: 0 auto 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+    .icon-button, .soft-button {
+      border: 1px solid #dce5e8;
+      background: rgba(255, 255, 255, .84);
+      border-radius: 13px;
+      min-height: 42px;
+      padding: 9px 13px;
+      font-weight: 800;
+    }
+    .icon-button { width: 43px; padding: 0; font-size: 18px; }
+    .practice-layout {
+      width: min(1240px, 100%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: minmax(390px, 1.1fr) minmax(300px, .9fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+    .board-card, .coach-card {
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid #e2e9eb;
+      border-radius: 22px;
+      box-shadow: 0 14px 42px rgba(63, 82, 100, .1);
+    }
+    .board-card { padding: clamp(13px, 2vw, 21px); display: flex; flex-direction: column; }
+    .coach-card { padding: clamp(14px, 2vw, 20px); display: flex; flex-direction: column; min-width: 0; }
+    .progress-row { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+    .question-count { font-size: 13px; font-weight: 900; white-space: nowrap; color: var(--blue); }
+    .progress-track { flex: 1; height: 9px; background: #edf1f2; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--teal), #69c1b3); border-radius: inherit; transition: width .35s ease; }
+    .score-chip { font-size: 12px; color: #735a24; background: #fff4cf; border-radius: 99px; padding: 7px 10px; font-weight: 900; white-space: nowrap; }
+    .problem-heading { text-align: center; }
+    .eyebrow { margin: 0 0 6px; color: var(--orange); font-size: 12px; font-weight: 900; letter-spacing: .1em; }
+    .problem-heading h2 { margin: 0 0 3px; font-size: clamp(21px, 3vw, 30px); }
+    .problem-heading p { margin: 0 0 5px; color: var(--muted); font-size: 12px; }
+
+    /* Column multiplication grid */
+    .work-area { display: grid; place-items: center; padding-top: 0; overflow: visible; flex: 1; min-height: 0; }
+    .sum-grid {
+      --label: clamp(72px, 10vw, 104px);
+      display: grid;
+      grid-template-columns: var(--label) repeat(4, var(--cell));
+      gap: 3px 7px;
+      align-items: center;
+      min-width: calc(var(--label) + var(--cell) * 4 + 28px);
+      position: relative;
+    }
+    .column-name { color: #a0acb5; font-size: 11px; font-weight: 800; text-align: center; padding-bottom: 2px; }
+    .row-label { text-align: right; padding-right: 7px; color: #788894; font-size: 12px; line-height: 1.25; font-weight: 800; }
+    .row-label b { display: block; color: var(--ink); font-size: 13px; }
+    .carry-label { color: var(--orange-dark); }
+    .grid-number, .entry-wrap, .blank-cell, .compound-cell {
+      width: var(--cell);
+      min-height: var(--cell);
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      position: relative;
+    }
+    .compound-cell { position: relative; }
+    .compound-cell > .entry-wrap:not(.carry-cell) { position: absolute; inset: 0; }
+    .grid-number { font-size: clamp(27px, 4vw, 37px); font-weight: 900; }
+    .operator-cell { font-size: 29px; color: var(--orange); font-weight: 1000; align-self: stretch; display: grid; place-items: center; }
+    .entry-wrap { border: 2px dashed #d9e1e3; background: #f8fafb; }
+    .entry-wrap.is-unused { border-color: transparent; background: transparent; }
+    .entry-wrap.is-unused input { visibility: hidden; }
+    .entry-wrap input {
+      width: 100%;
+      height: 100%;
+      min-height: calc(var(--cell) - 4px);
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--ink);
+      text-align: center;
+      font-size: clamp(26px, 5vw, 37px);
+      line-height: 1;
+      font-weight: 950;
+      caret-color: transparent;
+    }
+    .entry-wrap.carry-cell {
+      position: absolute;
+      z-index: 5;
+      width: calc(var(--cell) * .43);
+      min-height: calc(var(--cell) * .42);
+      border-width: 1.5px;
+      border-radius: 7px;
+      background: white;
+    }
+    .entry-wrap.carry-cell input { min-height: calc(var(--cell) * .38); font-size: clamp(14px, 2.1vw, 19px); }
+    .carry-tens-position { right: -2px; bottom: -1px; }
+    .carry-units-position { right: -7px; top: -9px; }
+    .add-carry-position { right: -5px; bottom: -7px; }
+    .carry-tens-position input { color: #2588c0; }
+    .carry-units-position input { color: #e97931; }
+    .add-carry-position input { color: #4da854; }
+    .entry-wrap.is-active { border-style: solid; border-color: var(--teal); background: var(--teal-soft); animation: pulse 1.5s ease-in-out infinite; }
+    .entry-wrap.is-active.carry-cell { border-color: currentColor; background: white; }
+    .entry-wrap.is-active::after {
+      content: attr(data-role);
+      position: absolute;
+      left: 50%;
+      bottom: -17px;
+      transform: translateX(-50%);
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 900;
+      white-space: nowrap;
+      z-index: 2;
+    }
+    .entry-wrap.is-active.carry-cell::after { display: none; }
+    .entry-wrap.is-focused { box-shadow: 0 0 0 5px rgba(47, 157, 143, .17); }
+    .entry-wrap.is-focused.carry-cell { box-shadow: 0 0 0 5px rgba(242, 138, 91, .18); }
+    .entry-wrap.is-done { border-style: solid; border-color: #9bd1c7; background: #f1fbf8; }
+    .entry-wrap.is-done.carry-cell { border-color: currentColor; background: white; }
+    .entry-wrap.is-wrong { border-color: var(--red) !important; background: #fff0f1 !important; animation: shake .3s linear; }
+    .rule-line { grid-column: 2 / 6; border-top: 4px solid var(--ink); margin: 1px 0 4px; height: 1px; }
+    .thin-rule { border-top-width: 2px; border-color: #6d7b87; }
+    .operand-row { min-height: var(--cell); }
+    .phase-tens { color: #2588c0; border-color: #add8ee; background: #f1f9fd; }
+    .phase-tens input { color: #2588c0; }
+    .phase-tens.is-active { border-color: #2588c0; background: #e4f5fc; }
+    .phase-tens.is-done { border-color: #8ecce8; background: #f2fafe; }
+    .phase-units { color: #e97931; border-color: #f4c3a2; background: #fff7f0; }
+    .phase-units input { color: #e97931; }
+    .phase-units.is-active { border-color: #e97931; background: #fff0e4; }
+    .phase-units.is-done { border-color: #efaf83; background: #fff8f2; }
+    .phase-add { color: #4da854; border-color: #b9dfbc; background: #f2fbf2; }
+    .phase-add input { color: #4da854; }
+    .phase-add.is-active { border-color: #4da854; background: #eaf8eb; }
+    .phase-add.is-active::after { color: #34823b; }
+    .phase-add.is-done { border-color: #94cd99; background: #f1fbf2; }
+    .entry-wrap.is-unused { border-color: transparent !important; background: transparent !important; }
+    .grid-caption {
+      grid-column: 2 / 6;
+      margin-top: 5px;
+      text-align: center;
+      color: #8a98a2;
+      font-size: 11px;
+    }
+
+    /* Coach panel */
+    .step-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .phase-pill { border-radius: 99px; padding: 6px 10px; font-size: 12px; color: var(--teal-dark); background: var(--teal-soft); font-weight: 900; }
+    .step-count { color: #92a0a8; font-size: 12px; font-weight: 800; }
+    .coach-card h2 { font-size: clamp(21px, 2.5vw, 28px); line-height: 1.22; margin: 10px 0 5px; }
+    .step-prompt { color: var(--muted); line-height: 1.5; margin: 0 0 8px; min-height: 43px; font-size: 13px; }
+    .thinking-card {
+      border: 1px solid #dce8ec;
+      background: #f7fbfc;
+      border-radius: 14px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .thinking-card span { color: #788996; font-size: 12px; font-weight: 800; }
+    .thinking-card strong { font-size: clamp(19px, 2.6vw, 25px); white-space: nowrap; }
+    .carry-tracker { margin: 8px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .tracker-title { grid-column: 1 / -1; color: #9b7542; font-size: 11px; font-weight: 900; }
+    .tracker-row { display: grid; place-items: center; gap: 3px; padding: 5px 3px; border: 1px solid #efe5d5; border-radius: 10px; font-size: 9px; text-align: center; color: #75848e; }
+    .tracker-row b { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 7px; background: #f3f5f5; color: #a3adb2; font-size: 14px; }
+    .tracker-row b.has-value { color: var(--orange-dark); background: var(--orange-soft); }
+    .feedback-box { min-height: 48px; margin-top: 8px; border-radius: 12px; padding: 8px 10px; display: flex; align-items: flex-start; gap: 7px; background: #f5f7f7; color: #77858e; font-size: 12px; line-height: 1.45; }
+    .feedback-box.success { background: #eaf8ec; color: #417f4b; }
+    .feedback-box.error { background: #fff0f1; color: #a7474b; }
+    .feedback-box.info { background: #fff7df; color: #896822; }
+    .feedback-icon { font-size: 18px; line-height: 1.3; }
+    .hint-box { margin-top: 6px; padding: 7px 9px; border-radius: 10px; background: #fff7de; color: #806223; font-size: 11px; line-height: 1.45; }
+    .coach-actions { display: grid; grid-template-columns: auto 1fr; gap: 8px; margin-top: auto; padding-top: 8px; }
+    .hint-button, .check-button {
+      border-radius: 14px;
+      min-height: 43px;
+      padding: 8px 12px;
+      font-weight: 900;
+    }
+    .hint-button { border: 1px solid #efd8a0; background: #fff8e5; color: #8a6929; }
+    .check-button { border: 0; color: white; background: var(--teal); box-shadow: 0 5px 0 var(--teal-dark); font-size: 16px; }
+    .check-button:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--teal-dark); }
+    .check-button:disabled { opacity: .58; cursor: default; transform: none; }
+
+    .keypad {
+      width: min(1240px, 100%);
+      margin: 8px auto 0;
+      background: rgba(255, 255, 255, .86);
+      border: 1px solid #e0e7e9;
+      border-radius: 15px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 7px;
+      box-shadow: 0 10px 30px rgba(65, 81, 96, .08);
+    }
+    .keypad button {
+      border: 1px solid #dfe6e8;
+      border-radius: 11px;
+      background: white;
+      min-height: 42px;
+      font-size: 18px;
+      font-weight: 900;
+      box-shadow: 0 3px 0 #d9e0e2;
+    }
+    .keypad button:active { transform: translateY(2px); box-shadow: 0 1px 0 #d9e0e2; }
+    .keypad .delete-key { color: var(--red); background: #fff7f7; }
+    .keypad .keypad-check { color: white; background: var(--teal); border-color: var(--teal-dark); box-shadow: 0 3px 0 var(--teal-dark); font-size: 14px; }
+
+    /* Completion overlays */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(31, 47, 61, .45);
+      backdrop-filter: blur(6px);
+    }
+    .modal-card {
+      width: min(440px, 100%);
+      border-radius: 28px;
+      background: white;
+      box-shadow: 0 26px 80px rgba(24, 37, 49, .25);
+      padding: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .modal-card::before { content: "✦  ·  ✧  ·  ✦"; display: block; color: var(--orange); letter-spacing: 7px; font-size: 18px; }
+    .modal-icon { font-size: 66px; margin: 10px 0 3px; }
+    .modal-card h2 { margin: 4px 0 7px; font-size: 30px; }
+    .modal-card p { color: var(--muted); line-height: 1.6; margin: 0 0 20px; }
+    .modal-card .primary-button { width: 100%; }
+    .result-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 18px 0 22px; }
+    .result-stat { background: #f6f9fa; border-radius: 14px; padding: 12px 7px; }
+    .result-stat strong, .result-stat span { display: block; }
+    .result-stat strong { font-size: 21px; }
+    .result-stat span { color: var(--muted); font-size: 11px; margin-top: 3px; }
+
+    .confetti-piece { position: fixed; top: -30px; z-index: 30; pointer-events: none; animation: fall 1.8s linear forwards; }
+    @keyframes pulse { 50% { transform: translateY(-2px); } }
+    @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    @keyframes fall { to { transform: translateY(110vh) rotate(560deg); opacity: .2; } }
+
+    /* iPad: keep the whole exercise in one viewport, in either orientation. */
+    @media (min-width: 721px) {
+      html, body { height: 100%; overflow: hidden; }
+      .screen { min-height: 0; height: 100dvh; }
+      .start-screen { padding: 14px 18px; }
+      .start-card { max-height: calc(100dvh - 28px); padding: clamp(22px, 3.5vh, 38px); }
+      .hero-copy h1 { margin-top: 18px; font-size: clamp(36px, 5.5vh, 54px); }
+      .route-strip { margin: 18px 0; padding: 12px; }
+      .level-card { min-height: 94px; padding: 11px; }
+      .start-actions { margin-top: 16px; }
+      .practice-screen { display: flex; flex-direction: column; }
+      .topbar { flex: 0 0 auto; }
+      .practice-layout { flex: 1 1 auto; min-height: 0; }
+      .board-card, .coach-card { height: 100%; min-height: 0; overflow: hidden; }
+      .keypad { flex: 0 0 auto; }
+    }
+    @media (min-width: 721px) and (max-height: 800px) {
+      :root { --cell: clamp(42px, 6.35vh, 51px); }
+      .brand-mark { width: 34px; height: 34px; font-size: 23px; }
+      .icon-button, .soft-button { min-height: 36px; padding-top: 6px; padding-bottom: 6px; }
+      .progress-row { margin-bottom: 5px; }
+      .problem-heading h2 { font-size: 23px; }
+      .problem-heading p { font-size: 11px; }
+      .sum-grid { row-gap: 2px; }
+      .column-name { font-size: 10px; }
+      .grid-caption { font-size: 9px; }
+      .coach-card { padding: 12px; }
+      .coach-card h2 { margin-top: 7px; font-size: 21px; }
+      .step-prompt { min-height: 38px; margin-bottom: 6px; font-size: 12px; }
+      .carry-tracker { margin-top: 6px; }
+      .feedback-box { min-height: 42px; margin-top: 6px; padding: 6px 8px; }
+      .coach-actions { padding-top: 6px; }
+      .hint-button, .check-button { min-height: 39px; }
+      .keypad button { min-height: 38px; }
+    }
+    @media (max-width: 720px) {
+      .practice-layout { grid-template-columns: 1fr; }
+      .coach-card { min-height: 430px; }
+      .keypad { grid-template-columns: repeat(6, 1fr); }
+      .keypad button { min-height: 46px; }
+      .keypad .delete-key { grid-column: span 2; }
+    }
+    @media (max-width: 620px) {
+      :root { --cell: clamp(43px, 15vw, 58px); }
+      .start-screen { padding: 12px; }
+      .start-card { border-radius: 25px; padding: 24px 18px; }
+      .start-card::after { display: none; }
+      .route-strip { grid-template-columns: 1fr; gap: 6px; }
+      .route-arrow { transform: rotate(90deg); }
+      .level-grid { grid-template-columns: 1fr; }
+      .level-card { min-height: 0; display: grid; grid-template-columns: 40px 1fr; column-gap: 5px; }
+      .level-card span { grid-row: 1 / 3; }
+      .level-card strong { margin: 0; }
+      .start-actions { align-items: stretch; flex-direction: column; }
+      .practice-screen { padding: 11px 8px 20px; }
+      .topbar .brand > span:not(.brand-mark) { display: none; }
+      .soft-button { font-size: 12px; padding: 8px 10px; }
+      .board-card, .coach-card { border-radius: 20px; padding: 16px 10px; }
+      .coach-card { padding: 17px; min-height: 430px; }
+      .sum-grid { --label: 74px; gap: 4px 3px; }
+      .row-label { font-size: 10px; padding-right: 3px; }
+      .row-label b { font-size: 11px; }
+      .entry-wrap { border-radius: 10px; }
+      .problem-heading p { margin-bottom: 8px; }
+      .score-chip { display: none; }
+      .practice-screen { padding-bottom: 160px; }
+      .keypad {
+        position: fixed;
+        left: 8px;
+        right: 8px;
+        bottom: max(8px, env(safe-area-inset-bottom));
+        z-index: 12;
+        width: auto;
+        grid-template-columns: repeat(5, 1fr);
+        border-radius: 16px;
+        gap: 6px;
+        padding: 8px;
+      }
+      .keypad .delete-key { grid-column: span 2; }
+      .keypad .keypad-check { grid-column: span 3; }
+      .result-stats { grid-template-columns: 1fr; }
+      .result-stat { display: flex; justify-content: space-between; align-items: center; }
+      .result-stat span { margin: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body>
+  <main id="startScreen" class="screen start-screen">
+    <section class="start-card" aria-labelledby="gameTitle">
+      <div class="brand"><span class="brand-mark">×</span><span>直式乘法小工房</span><span class="grade-pill">小四</span></div>
+      <div class="hero-copy">
+        <h1 id="gameTitle">兩位數乘兩位數<br><span>每一步都自己寫</span></h1>
+        <p>在方格填寫部分積、總積和進位數字。答對才會進入下一步，慢慢寫，直式就不會亂。</p>
+      </div>
+      <div class="route-strip" aria-label="計算次序">
+        <div class="route-step"><b>1</b><span>先乘十位</span></div><span class="route-arrow">→</span>
+        <div class="route-step"><b>2</b><span>再乘個位</span></div><span class="route-arrow">→</span>
+        <div class="route-step"><b>3</b><span>最後相加</span></div>
+      </div>
+      <h2 class="level-heading">選擇練習程度</h2>
+      <div class="level-grid" role="radiogroup" aria-label="練習程度">
+        <button class="level-card" data-level="basic" role="radio" aria-checked="false"><span>🌱</span><strong>起步練習</strong><small>數字較小，每題至少有一次進位。</small></button>
+        <button class="level-card selected" data-level="standard" role="radio" aria-checked="true"><span>⭐</span><strong>進位練習</strong><small>兩行部分積都要留意乘法進位。</small></button>
+        <button class="level-card" data-level="challenge" role="radio" aria-checked="false"><span>🚀</span><strong>進位挑戰</strong><small>乘法和最後相加都會出現進位。</small></button>
+      </div>
+      <div class="start-actions">
+        <button id="startButton" class="primary-button">開始 5 題練習　→</button>
+        <span class="start-note">適合滑鼠、鍵盤及 iPad 觸控操作</span>
+      </div>
+    </section>
+  </main>
+
+  <main id="practiceScreen" class="screen practice-screen hidden">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">×</span><span>直式乘法小工房</span></div>
+      <div class="top-actions">
+        <button id="soundButton" class="icon-button" aria-pressed="false" aria-label="開啟聲音">🔇</button>
+        <button id="homeButton" class="soft-button">返回選擇</button>
+      </div>
+    </header>
+
+    <div class="practice-layout">
+      <section class="board-card" aria-label="直式計算工作紙">
+        <div class="progress-row">
+          <span id="questionCount" class="question-count">第 1 / 5 題</span>
+          <div class="progress-track" aria-hidden="true"><div id="progressFill" class="progress-fill"></div></div>
+          <span id="accuracyChip" class="score-chip">準確率 100%</span>
+        </div>
+        <div class="problem-heading">
+          <p class="eyebrow">兩位數 × 兩位數</p>
+          <h2 id="problemText">37 × 24</h2>
+          <p>藍：十位乘法　橙：個位乘法　綠：最後相加</p>
+        </div>
+
+        <div class="work-area">
+          <div class="sum-grid" id="sumGrid">
+            <span></span><span class="column-name">千位</span><span class="column-name">百位</span><span class="column-name">十位</span><span class="column-name">個位</span>
+
+            <span class="row-label"><b>被乘數</b></span>
+            <span class="blank-cell operand-row"></span><span class="blank-cell operand-row"></span><span id="mTens" class="grid-number operand-row">3</span><span id="mUnits" class="grid-number operand-row">7</span>
+
+            <span class="row-label"><b>乘數</b></span>
+            <span class="operator-cell operand-row">×</span>
+            <span class="compound-cell operand-row">
+              <label class="entry-wrap carry-cell carry-tens-position phase-tens is-unused" data-cell-wrap="carry-tens"><input data-cell="carry-tens" inputmode="numeric" maxlength="1" aria-label="十位乘法進位"></label>
+            </span>
+            <span id="nTens" class="grid-number operand-row">2</span><span id="nUnits" class="grid-number operand-row">4</span>
+
+            <span class="rule-line"></span>
+
+            <span class="row-label"><b>十位部分積</b></span>
+            <label class="entry-wrap phase-tens is-unused" data-cell-wrap="p1-0"><input data-cell="p1-0" inputmode="numeric" maxlength="1" aria-label="十位部分積千位"></label>
+            <label class="entry-wrap phase-tens is-unused" data-cell-wrap="p1-1"><input data-cell="p1-1" inputmode="numeric" maxlength="1" aria-label="十位部分積百位"></label>
+            <label class="entry-wrap phase-tens is-unused" data-cell-wrap="p1-2"><input data-cell="p1-2" inputmode="numeric" maxlength="1" aria-label="十位部分積十位"></label>
+            <label class="entry-wrap phase-tens is-unused" data-cell-wrap="p1-3"><input data-cell="p1-3" inputmode="numeric" maxlength="1" aria-label="十位部分積個位"></label>
+
+            <span class="row-label"><b>個位部分積</b></span>
+            <span class="compound-cell">
+              <label class="entry-wrap phase-units is-unused" data-cell-wrap="p2-0"><input data-cell="p2-0" inputmode="numeric" maxlength="1" aria-label="個位部分積千位"></label>
+              <label class="entry-wrap carry-cell add-carry-position phase-add is-unused" data-cell-wrap="addcarry-0"><input data-cell="addcarry-0" inputmode="numeric" maxlength="1" aria-label="相加進位到千位"></label>
+            </span>
+            <span class="compound-cell">
+              <label class="entry-wrap phase-units is-unused" data-cell-wrap="p2-1"><input data-cell="p2-1" inputmode="numeric" maxlength="1" aria-label="個位部分積百位"></label>
+              <label class="entry-wrap carry-cell add-carry-position phase-add is-unused" data-cell-wrap="addcarry-1"><input data-cell="addcarry-1" inputmode="numeric" maxlength="1" aria-label="相加進位到百位"></label>
+            </span>
+            <span class="compound-cell">
+              <label class="entry-wrap phase-units is-unused" data-cell-wrap="p2-2"><input data-cell="p2-2" inputmode="numeric" maxlength="1" aria-label="個位部分積十位"></label>
+              <label class="entry-wrap carry-cell carry-units-position phase-units is-unused" data-cell-wrap="carry-units"><input data-cell="carry-units" inputmode="numeric" maxlength="1" aria-label="個位乘法進位"></label>
+            </span>
+            <label class="entry-wrap phase-units is-unused" data-cell-wrap="p2-3"><input data-cell="p2-3" inputmode="numeric" maxlength="1" aria-label="個位部分積個位"></label>
+
+            <span class="rule-line thin-rule"></span>
+
+            <span class="row-label"><b>積</b></span>
+            <label class="entry-wrap phase-add is-unused" data-cell-wrap="sum-0"><input data-cell="sum-0" inputmode="numeric" maxlength="1" aria-label="積的千位"></label>
+            <label class="entry-wrap phase-add is-unused" data-cell-wrap="sum-1"><input data-cell="sum-1" inputmode="numeric" maxlength="1" aria-label="積的百位"></label>
+            <label class="entry-wrap phase-add is-unused" data-cell-wrap="sum-2"><input data-cell="sum-2" inputmode="numeric" maxlength="1" aria-label="積的十位"></label>
+            <label class="entry-wrap phase-add is-unused" data-cell-wrap="sum-3"><input data-cell="sum-3" inputmode="numeric" maxlength="1" aria-label="積的個位"></label>
+
+            <p class="grid-caption">沒有進位時不需填「0」，相應的進位格不會亮起。</p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="coach-card" aria-labelledby="stepTitle">
+        <div class="step-top"><span id="phasePill" class="phase-pill">① 先乘十位</span><span id="stepCount" class="step-count">步驟 1 / 9</span></div>
+        <h2 id="stepTitle">先預留個位</h2>
+        <p id="stepPrompt" class="step-prompt">這一行是乘以整十數，先在個位方格填上合適的數字。</p>
+        <div class="thinking-card"><span>想一想</span><strong id="thinkingText">37 × 20 = ?</strong></div>
+
+        <div class="carry-tracker" aria-label="進位紀錄">
+          <div class="tracker-title">進位小記錄</div>
+          <div class="tracker-row"><span>十位乘法進位</span><b id="trackTens">—</b></div>
+          <div class="tracker-row"><span>個位乘法進位</span><b id="trackUnits">—</b></div>
+          <div class="tracker-row"><span>相加進位</span><b id="trackAdd">—</b></div>
+        </div>
+
+        <div id="feedbackBox" class="feedback-box" role="status" aria-live="polite"><span class="feedback-icon">✏️</span><span>按亮起的方格，填好後檢查這一步。</span></div>
+        <div id="hintBox" class="hint-box hidden"></div>
+        <div class="coach-actions">
+          <button id="hintButton" class="hint-button">💡 提示</button>
+          <button id="checkButton" class="check-button">檢查這一步</button>
+        </div>
+      </aside>
+    </div>
+
+    <nav class="keypad" aria-label="數字鍵盤">
+      <button data-key="0">0</button><button data-key="1">1</button><button data-key="2">2</button><button data-key="3">3</button><button data-key="4">4</button>
+      <button data-key="5">5</button><button data-key="6">6</button><button data-key="7">7</button><button data-key="8">8</button><button data-key="9">9</button>
+      <button id="deleteKey" class="delete-key" aria-label="刪除">⌫</button>
+      <button id="keypadCheck" class="keypad-check">檢查</button>
+    </nav>
+  </main>
+
+  <div id="questionOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="questionDoneTitle">
+    <section class="modal-card">
+      <div class="modal-icon">🧮✨</div>
+      <h2 id="questionDoneTitle">直式完成！</h2>
+      <p id="questionDoneCopy">你已完成 37 × 24 = 888，進位也填對了。</p>
+      <button id="nextQuestionButton" class="primary-button">下一題　→</button>
+    </section>
+  </div>
+
+  <div id="resultOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <section class="modal-card">
+      <div id="resultIcon" class="modal-icon">🏆</div>
+      <h2 id="resultTitle">五題完成！</h2>
+      <p id="resultMessage">你一步一步完成了所有直式。</p>
+      <div class="result-stats">
+        <div class="result-stat"><strong id="finalAccuracy">100%</strong><span>準確率</span></div>
+        <div class="result-stat"><strong id="finalAttempts">0</strong><span>作答次數</span></div>
+        <div class="result-stat"><strong id="finalTime">00:00</strong><span>完成時間</span></div>
+      </div>
+      <button id="restartButton" class="primary-button">再練 5 題　↻</button>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const TOTAL_QUESTIONS = 5;
+      const state = {
+        level: "standard",
+        questionIndex: 0,
+        multiplicand: 37,
+        multiplier: 24,
+        steps: [],
+        stepIndex: 0,
+        values: {},
+        locked: new Set(),
+        wrongCells: new Set(),
+        attempts: 0,
+        correctChecks: 0,
+        activeCell: null,
+        transitioning: false,
+        sound: false,
+        startedAt: 0
+      };
+
+      const $ = (selector) => document.querySelector(selector);
+      const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+      const elements = {
+        startScreen: $("#startScreen"),
+        practiceScreen: $("#practiceScreen"),
+        problemText: $("#problemText"),
+        questionCount: $("#questionCount"),
+        progressFill: $("#progressFill"),
+        accuracyChip: $("#accuracyChip"),
+        phasePill: $("#phasePill"),
+        stepCount: $("#stepCount"),
+        stepTitle: $("#stepTitle"),
+        stepPrompt: $("#stepPrompt"),
+        thinkingText: $("#thinkingText"),
+        feedbackBox: $("#feedbackBox"),
+        hintBox: $("#hintBox"),
+        checkButton: $("#checkButton"),
+        questionOverlay: $("#questionOverlay"),
+        resultOverlay: $("#resultOverlay")
+      };
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function digits4(number) {
+        return String(number).padStart(4, "0").split("").map(Number);
+      }
+
+      function additionCarryCount(a, b) {
+        const tensProduct = digits4(a * Math.floor(b / 10) * 10);
+        const unitsProduct = digits4(a * (b % 10));
+        let carry = 0;
+        let count = 0;
+        for (let col = 3; col >= 1; col -= 1) {
+          const total = tensProduct[col] + unitsProduct[col] + carry;
+          carry = Math.floor(total / 10);
+          if (carry > 0) count += 1;
+        }
+        return count;
+      }
+
+      function isSuitableQuestion(a, b, level) {
+        const aUnits = a % 10;
+        const bTens = Math.floor(b / 10);
+        const bUnits = b % 10;
+        const tensCarry = aUnits * bTens >= 10;
+        const unitsCarry = aUnits * bUnits >= 10;
+        const addCarries = additionCarryCount(a, b);
+
+        if (bUnits === 0) return false;
+        if (level === "basic") return (tensCarry || unitsCarry) && a <= 59 && b <= 59;
+        if (level === "challenge") return tensCarry && unitsCarry && addCarries >= 1 && a * b >= 1000;
+        return tensCarry && unitsCarry;
+      }
+
+      function generateQuestion() {
+        const ranges = {
+          basic: [12, 59],
+          standard: [21, 89],
+          challenge: [45, 99]
+        };
+        const [min, max] = ranges[state.level];
+        let a = 37;
+        let b = 24;
+        for (let tries = 0; tries < 5000; tries += 1) {
+          a = randomInt(min, max);
+          b = randomInt(min, max);
+          if (isSuitableQuestion(a, b, state.level)) return [a, b];
+        }
+        return [a, b];
+      }
+
+      function target(id, value, role = "填數字") {
+        return { id, value: String(value), role };
+      }
+
+      function rightAlignedTargets(prefix, number, endColumn, role) {
+        const text = String(number);
+        const startColumn = endColumn - text.length + 1;
+        return text.split("").map((digit, index) => target(`${prefix}-${startColumn + index}`, digit, role));
+      }
+
+      function buildSteps(a, b) {
+        const aTens = Math.floor(a / 10);
+        const aUnits = a % 10;
+        const bTens = Math.floor(b / 10);
+        const bUnits = b % 10;
+        const p1 = a * bTens * 10;
+        const p2 = a * bUnits;
+        const p1Digits = digits4(p1);
+        const p2Digits = digits4(p2);
+        const totalDigits = digits4(a * b);
+
+        const tensFirst = aUnits * bTens;
+        const tensCarry = Math.floor(tensFirst / 10);
+        const tensLeft = aTens * bTens + tensCarry;
+        const unitsFirst = aUnits * bUnits;
+        const unitsCarry = Math.floor(unitsFirst / 10);
+        const unitsLeft = aTens * bUnits + unitsCarry;
+
+        const steps = [
+          {
+            phase: "① 先乘十位",
+            title: "先預留個位",
+            prompt: `乘數的十位是 ${bTens}，代表 ${bTens * 10}。十位部分積的個位要預留位置。`,
+            thinking: `${a} × ${bTens * 10} = ?`,
+            hint: `因為這一行是乘以 ${bTens * 10}，部分積一定是整十數。想想整十數的個位是甚麼。`,
+            targets: [target("p1-3", 0, "預留")]
+          },
+          {
+            phase: "① 先乘十位",
+            title: `用 ${bTens} 乘被乘數的個位`,
+            prompt: `${bTens} × ${aUnits} 得到的個位寫在藍色部分積；進位填在乘數左方的藍色小格。`,
+            thinking: `${bTens} × ${aUnits} = ?`,
+            hint: `先算 ${bTens} × ${aUnits}。答案的個位寫入「十位部分積」的十位格；答案的十位填到乘數左方的小格。`,
+            targets: [target("p1-2", tensFirst % 10, "寫下"), ...(tensCarry ? [target("carry-tens", tensCarry, "進位")] : [])]
+          },
+          {
+            phase: "① 先乘十位",
+            title: `再用 ${bTens} 乘被乘數的十位`,
+            prompt: `別忘了加上剛才的進位 ${tensCarry}，把結果填在十位部分積餘下的方格。`,
+            thinking: `${bTens} × ${aTens} ＋ ${tensCarry} = ?`,
+            hint: `先算 ${bTens} × ${aTens}，再加進位 ${tensCarry}。如果答案有兩個數字，要由左至右填入兩格。`,
+            targets: rightAlignedTargets("p1", tensLeft, 1, "寫下")
+          },
+          {
+            phase: "② 再乘個位",
+            title: `用 ${bUnits} 乘被乘數的個位`,
+            prompt: `${bUnits} × ${aUnits} 的個位寫在橙色部分積；進位填在第二行部分積上方的小格。`,
+            thinking: `${bUnits} × ${aUnits} = ?`,
+            hint: `先算 ${bUnits} × ${aUnits}。答案的個位寫入個位格；答案的十位填到橙色部分積十位格上方。`,
+            targets: [target("p2-3", unitsFirst % 10, "寫下"), ...(unitsCarry ? [target("carry-units", unitsCarry, "進位")] : [])]
+          },
+          {
+            phase: "② 再乘個位",
+            title: `再用 ${bUnits} 乘被乘數的十位`,
+            prompt: `加上剛才的進位 ${unitsCarry}，完成個位部分積。`,
+            thinking: `${bUnits} × ${aTens} ＋ ${unitsCarry} = ?`,
+            hint: `先算 ${bUnits} × ${aTens}，再加進位 ${unitsCarry}。把完整答案由左至右填入亮起的格。`,
+            targets: rightAlignedTargets("p2", unitsLeft, 2, "寫下")
+          },
+          {
+            phase: "③ 最後相加",
+            title: "由個位開始相加",
+            prompt: "把兩行部分積的個位相加，填入總積的個位格。",
+            thinking: `${p1Digits[3]} ＋ ${p2Digits[3]} = ?`,
+            hint: "相加要由最右邊的個位開始。這一欄沒有進位，只需把和填在最下面。",
+            targets: [target("sum-3", totalDigits[3], "寫下")]
+          }
+        ];
+
+        let addCarryToHundreds = 0;
+        const tensSum = p1Digits[2] + p2Digits[2];
+        addCarryToHundreds = Math.floor(tensSum / 10);
+        steps.push({
+          phase: "③ 最後相加",
+          title: "把十位相加",
+          prompt: "十位相加後，把個位數寫在綠色積的十位格；若滿十，進位填在加法橫線前的綠色小格。",
+          thinking: `${p1Digits[2]} ＋ ${p2Digits[2]} = ?`,
+          hint: "兩個十位數相加。和的個位寫在最下面；和的十位填到百位上方的綠色小格。",
+          targets: [target("sum-2", totalDigits[2], "寫下"), ...(addCarryToHundreds ? [target("addcarry-1", addCarryToHundreds, "進位")] : [])]
+        });
+
+        const hundredsSum = p1Digits[1] + p2Digits[1] + addCarryToHundreds;
+        const addCarryToThousands = Math.floor(hundredsSum / 10);
+        steps.push({
+          phase: "③ 最後相加",
+          title: "把百位和進位相加",
+          prompt: `百位相加，再加上十位送來的綠色進位 ${addCarryToHundreds}。若再滿十，進位仍填在橫線前。`,
+          thinking: `${p1Digits[1]} ＋ ${p2Digits[1]} ＋ ${addCarryToHundreds} = ?`,
+          hint: `先把兩個百位相加，再加進位 ${addCarryToHundreds}。和的個位寫在百位格；若滿十便進到千位。`,
+          targets: [target("sum-1", totalDigits[1], "寫下"), ...(addCarryToThousands ? [target("addcarry-0", addCarryToThousands, "進位")] : [])]
+        });
+
+        const thousandsSum = p1Digits[0] + p2Digits[0] + addCarryToThousands;
+        if (thousandsSum > 0) {
+          steps.push({
+            phase: "③ 最後相加",
+            title: "完成千位",
+            prompt: `把千位和百位送來的進位 ${addCarryToThousands} 相加，完成總積。`,
+            thinking: `${p1Digits[0]} ＋ ${p2Digits[0]} ＋ ${addCarryToThousands} = ?`,
+            hint: `這是最左的一欄。把千位加上進位 ${addCarryToThousands}，答案直接寫在積的千位格。`,
+            targets: [target("sum-0", totalDigits[0], "寫下")]
+          });
+        }
+
+        return steps;
+      }
+
+      function setQuestion() {
+        [state.multiplicand, state.multiplier] = generateQuestion();
+        state.steps = buildSteps(state.multiplicand, state.multiplier);
+        state.stepIndex = 0;
+        state.values = {};
+        state.locked = new Set();
+        state.wrongCells = new Set();
+        state.activeCell = state.steps[0].targets[0].id;
+        state.transitioning = false;
+
+        const a = state.multiplicand;
+        const b = state.multiplier;
+        $("#mTens").textContent = Math.floor(a / 10);
+        $("#mUnits").textContent = a % 10;
+        $("#nTens").textContent = Math.floor(b / 10);
+        $("#nUnits").textContent = b % 10;
+        elements.problemText.textContent = `${a} × ${b}`;
+        elements.questionOverlay.classList.add("hidden");
+        render();
+        window.scrollTo({ top: 0, left: 0 });
+        focusActiveCell();
+      }
+
+      function currentStep() {
+        return state.steps[state.stepIndex];
+      }
+
+      function allUsedCells() {
+        return new Set(state.steps.flatMap((step) => step.targets.map((item) => item.id)));
+      }
+
+      function renderGrid() {
+        const step = currentStep();
+        const activeIds = new Set(step.targets.map((item) => item.id));
+        const usedIds = allUsedCells();
+
+        $$('[data-cell-wrap]').forEach((wrap) => {
+          const id = wrap.dataset.cellWrap;
+          const input = wrap.querySelector("input");
+          const stepTarget = step.targets.find((item) => item.id === id);
+          wrap.classList.toggle("is-unused", !usedIds.has(id));
+          wrap.classList.toggle("is-active", activeIds.has(id));
+          wrap.classList.toggle("is-done", state.locked.has(id));
+          wrap.classList.toggle("is-focused", id === state.activeCell && activeIds.has(id));
+          wrap.classList.toggle("is-wrong", state.wrongCells.has(id));
+          wrap.dataset.role = stepTarget?.role || "";
+          input.value = state.values[id] || "";
+          input.disabled = !usedIds.has(id);
+          input.readOnly = !activeIds.has(id) || state.transitioning;
+          input.tabIndex = activeIds.has(id) ? 0 : -1;
+        });
+      }
+
+      function renderTrackers() {
+        const mappings = [
+          ["#trackTens", "carry-tens"],
+          ["#trackUnits", "carry-units"],
+          ["#trackAdd", state.values["addcarry-0"] ? "addcarry-0" : "addcarry-1"]
+        ];
+        mappings.forEach(([selector, id]) => {
+          const element = $(selector);
+          const value = state.values[id];
+          element.textContent = value || "—";
+          element.classList.toggle("has-value", Boolean(value));
+        });
+      }
+
+      function accuracy() {
+        return state.attempts ? Math.round((state.correctChecks / state.attempts) * 100) : 100;
+      }
+
+      function render() {
+        const step = currentStep();
+        elements.questionCount.textContent = `第 ${state.questionIndex + 1} / ${TOTAL_QUESTIONS} 題`;
+        elements.progressFill.style.width = `${((state.questionIndex + state.stepIndex / state.steps.length) / TOTAL_QUESTIONS) * 100}%`;
+        elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
+        elements.phasePill.textContent = step.phase;
+        elements.stepCount.textContent = `步驟 ${state.stepIndex + 1} / ${state.steps.length}`;
+        elements.stepTitle.textContent = step.title;
+        elements.stepPrompt.textContent = step.prompt;
+        elements.thinkingText.textContent = step.thinking;
+        elements.checkButton.disabled = state.transitioning;
+        elements.hintBox.classList.add("hidden");
+        renderGrid();
+        renderTrackers();
+      }
+
+      function setFeedback(type, icon, text) {
+        elements.feedbackBox.className = `feedback-box ${type || ""}`.trim();
+        elements.feedbackBox.innerHTML = `<span class="feedback-icon">${icon}</span><span>${text}</span>`;
+      }
+
+      function focusActiveCell() {
+        // On phones and small tablets the built-in keypad is already visible.
+        // Keep the active square above it without opening the device keyboard.
+        const isTouchDevice = window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0;
+        if (isTouchDevice || window.innerWidth < 700) {
+          if (window.innerWidth >= 700) return;
+          window.setTimeout(() => {
+            const wrap = document.querySelector(`[data-cell-wrap="${state.activeCell}"]`);
+            if (!wrap) return;
+            const rect = wrap.getBoundingClientRect();
+            const safeBottom = window.innerHeight - 190;
+            if (rect.bottom > safeBottom) window.scrollBy({ top: rect.bottom - safeBottom + 18, behavior: "smooth" });
+            if (rect.top < 72) window.scrollBy({ top: rect.top - 90, behavior: "smooth" });
+          }, 30);
+          return;
+        }
+        window.setTimeout(() => {
+          const input = document.querySelector(`[data-cell="${state.activeCell}"]`);
+          if (input && !input.readOnly) input.focus({ preventScroll: true });
+        }, 20);
+      }
+
+      function chooseNextEmptyCell() {
+        const targets = currentStep().targets;
+        const empty = targets.find((item) => !state.values[item.id]);
+        state.activeCell = empty ? empty.id : targets[targets.length - 1].id;
+      }
+
+      function enterDigit(digit) {
+        if (state.transitioning) return;
+        const targets = currentStep().targets;
+        if (!targets.some((item) => item.id === state.activeCell)) chooseNextEmptyCell();
+        state.values[state.activeCell] = String(digit).slice(-1);
+        state.wrongCells.delete(state.activeCell);
+        const index = targets.findIndex((item) => item.id === state.activeCell);
+        const next = targets.slice(index + 1).find((item) => !state.values[item.id]);
+        if (next) state.activeCell = next.id;
+        renderGrid();
+        focusActiveCell();
+      }
+
+      function deleteDigit() {
+        if (state.transitioning) return;
+        const targets = currentStep().targets;
+        if (state.values[state.activeCell]) {
+          delete state.values[state.activeCell];
+          state.wrongCells.delete(state.activeCell);
+        } else {
+          const index = targets.findIndex((item) => item.id === state.activeCell);
+          if (index > 0) {
+            state.activeCell = targets[index - 1].id;
+            delete state.values[state.activeCell];
+            state.wrongCells.delete(state.activeCell);
+          }
+        }
+        renderGrid();
+        focusActiveCell();
+      }
+
+      function playTone(success = true) {
+        if (!state.sound) return;
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          const context = new AudioContext();
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(success ? 540 : 210, context.currentTime);
+          if (success) oscillator.frequency.exponentialRampToValueAtTime(760, context.currentTime + .13);
+          gain.gain.setValueAtTime(.08, context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(.001, context.currentTime + .22);
+          oscillator.connect(gain);
+          gain.connect(context.destination);
+          oscillator.start();
+          oscillator.stop(context.currentTime + .23);
+        } catch (_) { /* Sound is optional. */ }
+      }
+
+      function markWrongCells(wrongIds) {
+        state.wrongCells = new Set(wrongIds);
+        renderGrid();
+      }
+
+      function checkStep() {
+        if (state.transitioning) return;
+        const step = currentStep();
+        const emptyTargets = step.targets.filter((item) => !state.values[item.id]);
+        if (emptyTargets.length) {
+          state.wrongCells = new Set();
+          state.attempts += 1;
+          state.activeCell = emptyTargets[0].id;
+          setFeedback("info", "👀", emptyTargets.length === 1 ? "還有一格未填，找找正在閃動的方格。" : `還有 ${emptyTargets.length} 格未填，完成後再檢查。`);
+          elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
+          renderGrid();
+          focusActiveCell();
+          return;
+        }
+
+        state.attempts += 1;
+        const wrongTargets = step.targets.filter((item) => state.values[item.id] !== item.value);
+        if (wrongTargets.length) {
+          state.activeCell = wrongTargets[0].id;
+          setFeedback("error", "🌱", wrongTargets.length === 1 ? "有一格需要再想一想。看看算式和位值，再試一次！" : `有 ${wrongTargets.length} 格需要再想一想。先分清「寫下」和「進位」。`);
+          elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
+          markWrongCells(wrongTargets.map((item) => item.id));
+          playTone(false);
+          focusActiveCell();
+          return;
+        }
+
+        state.correctChecks += 1;
+        state.wrongCells = new Set();
+        state.transitioning = true;
+        step.targets.forEach((item) => state.locked.add(item.id));
+        setFeedback("success", "✅", "這一步正確！準備進入下一步。進位也記錄好了。");
+        playTone(true);
+        renderGrid();
+        renderTrackers();
+        elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
+
+        window.setTimeout(() => {
+          if (state.stepIndex < state.steps.length - 1) {
+            state.stepIndex += 1;
+            state.transitioning = false;
+            state.activeCell = currentStep().targets[0].id;
+            render();
+            setFeedback("", "✏️", "按亮起的方格，填好後檢查這一步。");
+            focusActiveCell();
+          } else {
+            completeQuestion();
+          }
+        }, 650);
+      }
+
+      function completeQuestion() {
+        const answer = state.multiplicand * state.multiplier;
+        $("#questionDoneCopy").textContent = `你已完成 ${state.multiplicand} × ${state.multiplier} = ${answer}，進位也填對了。`;
+        $("#nextQuestionButton").textContent = state.questionIndex + 1 >= TOTAL_QUESTIONS ? "查看成績　→" : "下一題　→";
+        elements.progressFill.style.width = `${((state.questionIndex + 1) / TOTAL_QUESTIONS) * 100}%`;
+        elements.questionOverlay.classList.remove("hidden");
+        celebrate(18);
+        $("#nextQuestionButton").focus();
+      }
+
+      function formatTime(totalSeconds) {
+        const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+        const seconds = String(totalSeconds % 60).padStart(2, "0");
+        return `${minutes}:${seconds}`;
+      }
+
+      function showResults() {
+        elements.questionOverlay.classList.add("hidden");
+        const finalAccuracy = accuracy();
+        const elapsed = Math.max(1, Math.round((Date.now() - state.startedAt) / 1000));
+        $("#finalAccuracy").textContent = `${finalAccuracy}%`;
+        $("#finalAttempts").textContent = state.attempts;
+        $("#finalTime").textContent = formatTime(elapsed);
+        $("#resultIcon").textContent = finalAccuracy >= 90 ? "🏆" : finalAccuracy >= 70 ? "🌟" : "🌱";
+        $("#resultMessage").textContent = finalAccuracy >= 90
+          ? "你能準確處理部分積和進位，直式排列也很穩！"
+          : finalAccuracy >= 70
+            ? "你已掌握計算次序，再留意進位就更好了。"
+            : "你完成了所有步驟！再練一局，進位會愈來愈熟。";
+        elements.resultOverlay.classList.remove("hidden");
+        celebrate(30);
+        $("#restartButton").focus();
+      }
+
+      function celebrate(count) {
+        const pieces = ["●", "▲", "◆", "✦"];
+        const colors = ["#f28a5b", "#ffd569", "#2f9d8f", "#4d83c4", "#d95f63"];
+        for (let index = 0; index < count; index += 1) {
+          const piece = document.createElement("span");
+          piece.className = "confetti-piece";
+          piece.textContent = pieces[index % pieces.length];
+          piece.style.left = `${Math.random() * 100}vw`;
+          piece.style.color = colors[index % colors.length];
+          piece.style.animationDelay = `${Math.random() * .45}s`;
+          piece.style.fontSize = `${10 + Math.random() * 11}px`;
+          document.body.appendChild(piece);
+          window.setTimeout(() => piece.remove(), 2400);
+        }
+      }
+
+      function startGame() {
+        state.questionIndex = 0;
+        state.attempts = 0;
+        state.correctChecks = 0;
+        state.startedAt = Date.now();
+        elements.startScreen.classList.add("hidden");
+        elements.resultOverlay.classList.add("hidden");
+        elements.practiceScreen.classList.remove("hidden");
+        setQuestion();
+        setFeedback("", "✏️", "按亮起的方格，填好後檢查這一步。");
+      }
+
+      $$(".level-card").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.level = button.dataset.level;
+          $$(".level-card").forEach((item) => {
+            const selected = item === button;
+            item.classList.toggle("selected", selected);
+            item.setAttribute("aria-checked", String(selected));
+          });
+        });
+      });
+
+      $("#startButton").addEventListener("click", startGame);
+      $("#restartButton").addEventListener("click", startGame);
+      $("#homeButton").addEventListener("click", () => {
+        elements.practiceScreen.classList.add("hidden");
+        elements.questionOverlay.classList.add("hidden");
+        elements.resultOverlay.classList.add("hidden");
+        elements.startScreen.classList.remove("hidden");
+        window.scrollTo({ top: 0, left: 0 });
+      });
+
+      $("#soundButton").addEventListener("click", (event) => {
+        state.sound = !state.sound;
+        event.currentTarget.textContent = state.sound ? "🔊" : "🔇";
+        event.currentTarget.setAttribute("aria-pressed", String(state.sound));
+        event.currentTarget.setAttribute("aria-label", state.sound ? "關閉聲音" : "開啟聲音");
+        if (state.sound) playTone(true);
+      });
+
+      $("#hintButton").addEventListener("click", () => {
+        elements.hintBox.textContent = `提示：${currentStep().hint}`;
+        elements.hintBox.classList.toggle("hidden");
+      });
+      elements.checkButton.addEventListener("click", checkStep);
+
+      $$('[data-cell]').forEach((input) => {
+        if (window.matchMedia("(pointer: coarse)").matches || navigator.maxTouchPoints > 0) {
+          input.setAttribute("inputmode", "none");
+        }
+        input.addEventListener("focus", () => {
+          if (currentStep().targets.some((item) => item.id === input.dataset.cell)) {
+            state.activeCell = input.dataset.cell;
+            renderGrid();
+          }
+        });
+        input.addEventListener("input", (event) => {
+          const digit = event.target.value.replace(/\D/g, "").slice(-1);
+          if (digit) enterDigit(digit);
+          else deleteDigit();
+        });
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            checkStep();
+          } else if (event.key === "Backspace" && !state.values[input.dataset.cell]) {
+            event.preventDefault();
+            deleteDigit();
+          }
+        });
+      });
+
+      $$('[data-key]').forEach((button) => button.addEventListener("click", () => enterDigit(button.dataset.key)));
+      $("#deleteKey").addEventListener("click", deleteDigit);
+      $("#keypadCheck").addEventListener("click", checkStep);
+      $("#nextQuestionButton").addEventListener("click", () => {
+        if (state.questionIndex + 1 >= TOTAL_QUESTIONS) {
+          showResults();
+        } else {
+          state.questionIndex += 1;
+          setQuestion();
+          setFeedback("", "✏️", "新一題開始！按亮起的方格逐步完成直式。");
+        }
+      });
+
+      window.__columnMultiplicationGame = {
+        buildSteps,
+        isSuitableQuestion,
+        digits4,
+        additionCarryCount
+      };
+    })();
+  </script>
+</body>
+</html>
