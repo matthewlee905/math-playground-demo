@@ -179,6 +179,13 @@
       gap: 12px;
       align-items: stretch;
     }
+    .practice-screen[data-level="standard"] .practice-layout,
+    .practice-screen[data-level="challenge"] .practice-layout {
+      width: min(850px, 100%);
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .practice-screen[data-level="standard"] .coach-card,
+    .practice-screen[data-level="challenge"] .coach-card { display: none; }
     .board-card, .coach-card {
       background: rgba(255, 255, 255, .94);
       border: 1px solid #e2e9eb;
@@ -294,6 +301,59 @@
     .phase-add.is-active::after { color: #34823b; }
     .phase-add.is-done { border-color: #94cd99; background: #f1fbf2; }
     .entry-wrap.is-unused { border-color: transparent !important; background: transparent !important; }
+    .practice-screen[data-level="standard"] .is-calculation-number {
+      z-index: 6;
+      outline: 3px solid #efb72f;
+      outline-offset: 2px;
+      background: #fff4bd !important;
+      box-shadow: 0 0 0 7px rgba(255, 213, 105, .23);
+      animation: calculationPulse 1.2s ease-in-out infinite;
+    }
+    .practice-screen[data-level="standard"] .grid-number.is-calculation-number::after,
+    .practice-screen[data-level="standard"] .entry-wrap.is-calculation-number::before {
+      content: "計";
+      position: absolute;
+      top: -10px;
+      right: -7px;
+      display: grid;
+      place-items: center;
+      width: 21px;
+      height: 21px;
+      border-radius: 99px;
+      color: #6c4c0a;
+      background: var(--yellow);
+      border: 2px solid white;
+      font-size: 10px;
+      font-weight: 950;
+      line-height: 1;
+      z-index: 8;
+    }
+    .practice-screen[data-level="standard"] .entry-wrap.is-calculation-carry {
+      z-index: 9;
+      outline: 3px solid #efb72f;
+      outline-offset: 2px;
+      box-shadow: 0 0 0 6px rgba(255, 213, 105, .26);
+    }
+    .practice-screen[data-level="standard"] .entry-wrap.is-calculation-carry::before {
+      content: "進位";
+      position: absolute;
+      top: -17px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 2px 5px;
+      border-radius: 99px;
+      color: #6c4c0a;
+      background: var(--yellow);
+      border: 1px solid white;
+      font-size: 8px;
+      font-weight: 950;
+      line-height: 1;
+      white-space: nowrap;
+      z-index: 10;
+    }
+    .practice-screen[data-level="challenge"] .colour-guide,
+    .practice-screen[data-level="challenge"] .grid-caption { display: none; }
+    .practice-screen[data-level="challenge"] .entry-wrap.is-active::after { display: none; }
     .grid-caption {
       grid-column: 2 / 6;
       margin-top: 5px;
@@ -402,6 +462,7 @@
 
     .confetti-piece { position: fixed; top: -30px; z-index: 30; pointer-events: none; animation: fall 1.8s linear forwards; }
     @keyframes pulse { 50% { transform: translateY(-2px); } }
+    @keyframes calculationPulse { 50% { box-shadow: 0 0 0 10px rgba(255, 213, 105, .13); } }
     @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
     @keyframes fall { to { transform: translateY(110vh) rotate(560deg); opacity: .2; } }
 
@@ -510,8 +571,8 @@
       <h2 class="level-heading">選擇練習程度</h2>
       <div class="level-grid" role="radiogroup" aria-label="練習程度">
         <button class="level-card" data-level="basic" role="radio" aria-checked="false"><span>🌱</span><strong>起步練習</strong><small>數字較小，每題至少有一次進位。</small></button>
-        <button class="level-card selected" data-level="standard" role="radio" aria-checked="true"><span>⭐</span><strong>進位練習</strong><small>兩行部分積都要留意乘法進位。</small></button>
-        <button class="level-card" data-level="challenge" role="radio" aria-checked="false"><span>🚀</span><strong>進位挑戰</strong><small>乘法和最後相加都會出現進位。</small></button>
+        <button class="level-card selected" data-level="standard" role="radio" aria-checked="true"><span>⭐</span><strong>進位練習</strong><small>直式會標示本步正在計算的數字和進位。</small></button>
+        <button class="level-card" data-level="challenge" role="radio" aria-checked="false"><span>🚀</span><strong>進位挑戰</strong><small>不顯示步驟或提示，獨立完成進位直式。</small></button>
       </div>
       <div class="start-actions">
         <button id="startButton" class="primary-button">開始 5 題練習　→</button>
@@ -539,7 +600,7 @@
         <div class="problem-heading">
           <p class="eyebrow">兩位數 × 兩位數</p>
           <h2 id="problemText">37 × 24</h2>
-          <p>藍：十位乘法　橙：個位乘法　綠：最後相加</p>
+          <p class="colour-guide">藍：十位乘法　橙：個位乘法　綠：最後相加</p>
         </div>
 
         <div class="work-area">
@@ -683,6 +744,7 @@
         stepTitle: $("#stepTitle"),
         stepPrompt: $("#stepPrompt"),
         thinkingText: $("#thinkingText"),
+        coachCard: $(".coach-card"),
         feedbackBox: $("#feedbackBox"),
         hintBox: $("#hintBox"),
         checkButton: $("#checkButton"),
@@ -777,6 +839,7 @@
             prompt: `乘數的十位是 ${bTens}，代表 ${bTens * 10}。十位部分積的個位要預留位置。`,
             thinking: `${a} × ${bTens * 10} = ?`,
             hint: `因為這一行是乘以 ${bTens * 10}，部分積一定是整十數。想想整十數的個位是甚麼。`,
+            markers: { numbers: ["nTens"], cells: [], carries: [] },
             targets: [target("p1-3", 0, "預留")]
           },
           {
@@ -785,6 +848,7 @@
             prompt: `${bTens} × ${aUnits} 得到的個位寫在藍色部分積；進位填在乘數左方的藍色小格。`,
             thinking: `${bTens} × ${aUnits} = ?`,
             hint: `先算 ${bTens} × ${aUnits}。答案的個位寫入「十位部分積」的十位格；答案的十位填到乘數左方的小格。`,
+            markers: { numbers: ["nTens", "mUnits"], cells: [], carries: tensCarry ? ["carry-tens"] : [] },
             targets: [target("p1-2", tensFirst % 10, "寫下"), ...(tensCarry ? [target("carry-tens", tensCarry, "進位")] : [])]
           },
           {
@@ -793,6 +857,7 @@
             prompt: `別忘了加上剛才的進位 ${tensCarry}，把結果填在十位部分積餘下的方格。`,
             thinking: `${bTens} × ${aTens} ＋ ${tensCarry} = ?`,
             hint: `先算 ${bTens} × ${aTens}，再加進位 ${tensCarry}。如果答案有兩個數字，要由左至右填入兩格。`,
+            markers: { numbers: ["nTens", "mTens"], cells: [], carries: tensCarry ? ["carry-tens"] : [] },
             targets: rightAlignedTargets("p1", tensLeft, 1, "寫下")
           },
           {
@@ -801,6 +866,7 @@
             prompt: `${bUnits} × ${aUnits} 的個位寫在橙色部分積；進位填在第二行部分積上方的小格。`,
             thinking: `${bUnits} × ${aUnits} = ?`,
             hint: `先算 ${bUnits} × ${aUnits}。答案的個位寫入個位格；答案的十位填到橙色部分積十位格上方。`,
+            markers: { numbers: ["nUnits", "mUnits"], cells: [], carries: unitsCarry ? ["carry-units"] : [] },
             targets: [target("p2-3", unitsFirst % 10, "寫下"), ...(unitsCarry ? [target("carry-units", unitsCarry, "進位")] : [])]
           },
           {
@@ -809,6 +875,7 @@
             prompt: `加上剛才的進位 ${unitsCarry}，完成個位部分積。`,
             thinking: `${bUnits} × ${aTens} ＋ ${unitsCarry} = ?`,
             hint: `先算 ${bUnits} × ${aTens}，再加進位 ${unitsCarry}。把完整答案由左至右填入亮起的格。`,
+            markers: { numbers: ["nUnits", "mTens"], cells: [], carries: unitsCarry ? ["carry-units"] : [] },
             targets: rightAlignedTargets("p2", unitsLeft, 2, "寫下")
           },
           {
@@ -817,6 +884,7 @@
             prompt: "把兩行部分積的個位相加，填入總積的個位格。",
             thinking: `${p1Digits[3]} ＋ ${p2Digits[3]} = ?`,
             hint: "相加要由最右邊的個位開始。這一欄沒有進位，只需把和填在最下面。",
+            markers: { numbers: [], cells: ["p1-3", "p2-3"], carries: [] },
             targets: [target("sum-3", totalDigits[3], "寫下")]
           }
         ];
@@ -830,6 +898,7 @@
           prompt: "十位相加後，把個位數寫在綠色積的十位格；若滿十，進位填在加法橫線前的綠色小格。",
           thinking: `${p1Digits[2]} ＋ ${p2Digits[2]} = ?`,
           hint: "兩個十位數相加。和的個位寫在最下面；和的十位填到百位上方的綠色小格。",
+          markers: { numbers: [], cells: ["p1-2", "p2-2"], carries: addCarryToHundreds ? ["addcarry-1"] : [] },
           targets: [target("sum-2", totalDigits[2], "寫下"), ...(addCarryToHundreds ? [target("addcarry-1", addCarryToHundreds, "進位")] : [])]
         });
 
@@ -841,6 +910,7 @@
           prompt: `百位相加，再加上十位送來的綠色進位 ${addCarryToHundreds}。若再滿十，進位仍填在橫線前。`,
           thinking: `${p1Digits[1]} ＋ ${p2Digits[1]} ＋ ${addCarryToHundreds} = ?`,
           hint: `先把兩個百位相加，再加進位 ${addCarryToHundreds}。和的個位寫在百位格；若滿十便進到千位。`,
+          markers: { numbers: [], cells: ["p1-1", "p2-1"], carries: [...(addCarryToHundreds ? ["addcarry-1"] : []), ...(addCarryToThousands ? ["addcarry-0"] : [])] },
           targets: [target("sum-1", totalDigits[1], "寫下"), ...(addCarryToThousands ? [target("addcarry-0", addCarryToThousands, "進位")] : [])]
         });
 
@@ -852,6 +922,7 @@
             prompt: `把千位和百位送來的進位 ${addCarryToThousands} 相加，完成總積。`,
             thinking: `${p1Digits[0]} ＋ ${p2Digits[0]} ＋ ${addCarryToThousands} = ?`,
             hint: `這是最左的一欄。把千位加上進位 ${addCarryToThousands}，答案直接寫在積的千位格。`,
+            markers: { numbers: [], cells: ["p1-0", "p2-0"], carries: addCarryToThousands ? ["addcarry-0"] : [] },
             targets: [target("sum-0", totalDigits[0], "寫下")]
           });
         }
@@ -910,6 +981,21 @@
           input.readOnly = !activeIds.has(id) || state.transitioning;
           input.tabIndex = activeIds.has(id) ? 0 : -1;
         });
+
+        $$(".is-calculation-number, .is-calculation-carry").forEach((element) => {
+          element.classList.remove("is-calculation-number", "is-calculation-carry");
+        });
+        if (state.level !== "standard") return;
+
+        const markers = step.markers || { numbers: [], cells: [], carries: [] };
+        markers.numbers.forEach((id) => document.getElementById(id)?.classList.add("is-calculation-number"));
+        markers.cells.forEach((id) => document.querySelector(`[data-cell-wrap="${id}"]`)?.classList.add("is-calculation-number"));
+        markers.carries.forEach((id) => document.querySelector(`[data-cell-wrap="${id}"]`)?.classList.add("is-calculation-carry"));
+      }
+
+      function updateLevelPresentation() {
+        elements.practiceScreen.dataset.level = state.level;
+        elements.coachCard.setAttribute("aria-hidden", String(state.level !== "basic"));
       }
 
       function renderTrackers() {
@@ -1140,6 +1226,7 @@
         state.attempts = 0;
         state.correctChecks = 0;
         state.startedAt = Date.now();
+        updateLevelPresentation();
         elements.startScreen.classList.add("hidden");
         elements.resultOverlay.classList.add("hidden");
         elements.practiceScreen.classList.remove("hidden");
