@@ -236,9 +236,13 @@
     .entry-wrap.is-unused { border-color: transparent; background: transparent; }
     .entry-wrap.is-unused input { visibility: hidden; }
     .entry-wrap input {
+      display: block;
       width: 100%;
       height: 100%;
       min-height: calc(var(--cell) - 4px);
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       border: 0;
       border-radius: 10px;
       background: transparent;
@@ -248,6 +252,9 @@
       line-height: 1;
       font-weight: 950;
       caret-color: transparent;
+      text-indent: 0;
+      -webkit-appearance: none;
+      appearance: none;
     }
     .entry-wrap.carry-cell {
       position: absolute;
@@ -259,6 +266,8 @@
       background: white;
     }
     .entry-wrap.carry-cell input { min-height: calc(var(--cell) * .38); font-size: clamp(16px, 2.2vw, 21px); }
+    .multiplier-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .operator-inline { flex: 0 0 auto; color: var(--orange); font-size: 29px; font-weight: 1000; line-height: 1; }
     .carry-tens-position { right: -2px; bottom: -1px; }
     .carry-units-position { right: -7px; top: -9px; }
     .add-carry-position { right: -5px; bottom: -7px; }
@@ -623,8 +632,8 @@
             <span class="row-label"><b>被乘數</b></span>
             <span class="blank-cell operand-row"></span><span class="blank-cell operand-row"></span><span id="mTens" class="grid-number operand-row">3</span><span id="mUnits" class="grid-number operand-row">7</span>
 
-            <span class="row-label"><b>乘數</b></span>
-            <span class="operator-cell operand-row">×</span>
+            <span class="row-label multiplier-label"><b>乘數</b><span class="operator-inline">×</span></span>
+            <span class="blank-cell operand-row"></span>
             <span class="compound-cell operand-row">
               <label class="entry-wrap carry-cell carry-tens-position phase-tens is-unused" data-cell-wrap="carry-tens"><input data-cell="carry-tens" inputmode="numeric" maxlength="1" aria-label="十位乘法進位"></label>
             </span>
