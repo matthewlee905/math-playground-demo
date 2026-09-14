@@ -294,7 +294,13 @@
     .entry-wrap.is-done { border-style: solid; border-color: #9bd1c7; background: #f1fbf8; }
     .entry-wrap.is-done.carry-cell { border-color: currentColor; background: white; }
     .entry-wrap.is-wrong { border-color: var(--red) !important; background: #fff0f1 !important; animation: shake .3s linear; }
-    .rule-line { grid-column: 2 / 6; border-top: 4px solid var(--ink); margin: 1px 0 4px; height: 1px; }
+    .rule-line {
+      /* Both rules begin directly below the multiplication sign and end together. */
+      grid-column: 1 / 6;
+      margin: 1px 0 4px calc(var(--label) - var(--cell) * .48);
+      border-top: 4px solid var(--ink);
+      height: 1px;
+    }
     .thin-rule { border-top-width: 2px; border-color: #6d7b87; }
     .operand-row { min-height: var(--cell); }
     .phase-tens { color: #2588c0; border-color: #add8ee; background: #f1f9fd; }
