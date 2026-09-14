@@ -23,7 +23,7 @@
       --green: #65ad70;
       --red: #d95f63;
       --shadow: 0 22px 60px rgba(48, 66, 83, .13);
-      --cell: clamp(46px, 6.8vh, 58px);
+      --cell: clamp(50px, 7.4vh, 62px);
     }
 
     * { box-sizing: border-box; }
@@ -201,8 +201,8 @@
     .score-chip { font-size: 12px; color: #735a24; background: #fff4cf; border-radius: 99px; padding: 7px 10px; font-weight: 900; white-space: nowrap; }
     .problem-heading { text-align: center; }
     .eyebrow { margin: 0 0 6px; color: var(--orange); font-size: 12px; font-weight: 900; letter-spacing: .1em; }
-    .problem-heading h2 { margin: 0 0 3px; font-size: clamp(21px, 3vw, 30px); }
-    .problem-heading p { margin: 0 0 5px; color: var(--muted); font-size: 12px; }
+    .problem-heading h2 { margin: 0 0 3px; font-size: clamp(25px, 3.4vw, 35px); }
+    .problem-heading p { margin: 0 0 5px; color: var(--muted); font-size: 13px; }
 
     /* Column multiplication grid */
     .work-area { display: grid; place-items: center; padding-top: 0; overflow: visible; flex: 1; min-height: 0; }
@@ -215,9 +215,9 @@
       min-width: calc(var(--label) + var(--cell) * 4 + 28px);
       position: relative;
     }
-    .column-name { color: #a0acb5; font-size: 11px; font-weight: 800; text-align: center; padding-bottom: 2px; }
-    .row-label { text-align: right; padding-right: 7px; color: #788894; font-size: 12px; line-height: 1.25; font-weight: 800; }
-    .row-label b { display: block; color: var(--ink); font-size: 13px; }
+    .column-name { color: #8999a5; font-size: 13px; font-weight: 850; text-align: center; padding-bottom: 2px; }
+    .row-label { text-align: right; padding-right: 7px; color: #6f818e; font-size: 13px; line-height: 1.25; font-weight: 850; }
+    .row-label b { display: block; color: var(--ink); font-size: 15px; }
     .carry-label { color: var(--orange-dark); }
     .grid-number, .entry-wrap, .blank-cell, .compound-cell {
       width: var(--cell);
@@ -229,7 +229,7 @@
     }
     .compound-cell { position: relative; }
     .compound-cell > .entry-wrap:not(.carry-cell) { position: absolute; inset: 0; }
-    .grid-number { font-size: clamp(27px, 4vw, 37px); font-weight: 900; }
+    .grid-number { font-size: clamp(31px, 4.5vw, 42px); font-weight: 900; }
     .operator-cell { font-size: 29px; color: var(--orange); font-weight: 1000; align-self: stretch; display: grid; place-items: center; }
     .entry-wrap { border: 2px dashed #d9e1e3; background: #f8fafb; }
     .entry-wrap.is-unused { border-color: transparent; background: transparent; }
@@ -243,7 +243,7 @@
       background: transparent;
       color: var(--ink);
       text-align: center;
-      font-size: clamp(26px, 5vw, 37px);
+      font-size: clamp(30px, 5.2vw, 42px);
       line-height: 1;
       font-weight: 950;
       caret-color: transparent;
@@ -359,15 +359,15 @@
       margin-top: 5px;
       text-align: center;
       color: #8a98a2;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     /* Coach panel */
     .step-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .phase-pill { border-radius: 99px; padding: 6px 10px; font-size: 12px; color: var(--teal-dark); background: var(--teal-soft); font-weight: 900; }
     .step-count { color: #92a0a8; font-size: 12px; font-weight: 800; }
-    .coach-card h2 { font-size: clamp(21px, 2.5vw, 28px); line-height: 1.22; margin: 10px 0 5px; }
-    .step-prompt { color: var(--muted); line-height: 1.5; margin: 0 0 8px; min-height: 43px; font-size: 13px; }
+    .coach-card h2 { font-size: clamp(25px, 2.7vw, 31px); line-height: 1.18; margin: 12px 0 7px; }
+    .step-prompt { color: var(--muted); line-height: 1.45; margin: 0 0 10px; min-height: 24px; font-size: 16px; font-weight: 750; }
     .thinking-card {
       border: 1px solid #dce8ec;
       background: #f7fbfc;
@@ -378,19 +378,19 @@
       justify-content: space-between;
       gap: 12px;
     }
-    .thinking-card span { color: #788996; font-size: 12px; font-weight: 800; }
-    .thinking-card strong { font-size: clamp(19px, 2.6vw, 25px); white-space: nowrap; }
-    .carry-tracker { margin: 8px 0 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .thinking-card span { color: #788996; font-size: 13px; font-weight: 850; }
+    .thinking-card strong { font-size: clamp(23px, 3vw, 31px); white-space: nowrap; }
+    .carry-tracker { display: none; }
     .tracker-title { grid-column: 1 / -1; color: #9b7542; font-size: 11px; font-weight: 900; }
     .tracker-row { display: grid; place-items: center; gap: 3px; padding: 5px 3px; border: 1px solid #efe5d5; border-radius: 10px; font-size: 9px; text-align: center; color: #75848e; }
     .tracker-row b { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 7px; background: #f3f5f5; color: #a3adb2; font-size: 14px; }
     .tracker-row b.has-value { color: var(--orange-dark); background: var(--orange-soft); }
-    .feedback-box { min-height: 48px; margin-top: 8px; border-radius: 12px; padding: 8px 10px; display: flex; align-items: flex-start; gap: 7px; background: #f5f7f7; color: #77858e; font-size: 12px; line-height: 1.45; }
+    .feedback-box { min-height: 48px; margin-top: 10px; border-radius: 12px; padding: 9px 11px; display: flex; align-items: center; gap: 8px; background: #f5f7f7; color: #77858e; font-size: 15px; font-weight: 750; line-height: 1.35; }
     .feedback-box.success { background: #eaf8ec; color: #417f4b; }
     .feedback-box.error { background: #fff0f1; color: #a7474b; }
     .feedback-box.info { background: #fff7df; color: #896822; }
     .feedback-icon { font-size: 18px; line-height: 1.3; }
-    .hint-box { margin-top: 6px; padding: 7px 9px; border-radius: 10px; background: #fff7de; color: #806223; font-size: 11px; line-height: 1.45; }
+    .hint-box { margin-top: 7px; padding: 9px 11px; border-radius: 10px; background: #fff7de; color: #806223; font-size: 14px; font-weight: 750; line-height: 1.4; }
     .coach-actions { display: grid; grid-template-columns: auto 1fr; gap: 8px; margin-top: auto; padding-top: 8px; }
     .hint-button, .check-button {
       border-radius: 14px;
@@ -404,26 +404,27 @@
     .check-button:disabled { opacity: .58; cursor: default; transform: none; }
 
     .keypad {
-      width: min(1240px, 100%);
+      width: min(700px, calc(100% - 24px));
       margin: 8px auto 0;
       background: rgba(255, 255, 255, .86);
       border: 1px solid #e0e7e9;
-      border-radius: 15px;
-      padding: 6px;
+      border-radius: 17px;
+      padding: 5px;
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 7px;
+      grid-template-columns: repeat(10, minmax(42px, 1fr)) minmax(54px, .9fr) minmax(76px, 1.2fr);
+      gap: 5px;
       box-shadow: 0 10px 30px rgba(65, 81, 96, .08);
     }
     .keypad button {
       border: 1px solid #dfe6e8;
       border-radius: 11px;
       background: white;
-      min-height: 42px;
-      font-size: 18px;
+      min-height: 44px;
+      font-size: 20px;
       font-weight: 900;
       box-shadow: 0 3px 0 #d9e0e2;
     }
+    .keypad button[data-key] { border-radius: 999px; }
     .keypad button:active { transform: translateY(2px); box-shadow: 0 1px 0 #d9e0e2; }
     .keypad .delete-key { color: var(--red); background: #fff7f7; }
     .keypad .keypad-check { color: white; background: var(--teal); border-color: var(--teal-dark); box-shadow: 0 3px 0 var(--teal-dark); font-size: 14px; }
@@ -483,23 +484,22 @@
       .keypad { flex: 0 0 auto; }
     }
     @media (min-width: 721px) and (max-height: 800px) {
-      :root { --cell: clamp(42px, 6.35vh, 51px); }
+      :root { --cell: clamp(48px, 7.05vh, 55px); }
       .brand-mark { width: 34px; height: 34px; font-size: 23px; }
       .icon-button, .soft-button { min-height: 36px; padding-top: 6px; padding-bottom: 6px; }
       .progress-row { margin-bottom: 5px; }
-      .problem-heading h2 { font-size: 23px; }
-      .problem-heading p { font-size: 11px; }
+      .problem-heading h2 { font-size: 29px; }
+      .problem-heading p { font-size: 12px; }
       .sum-grid { row-gap: 2px; }
-      .column-name { font-size: 10px; }
-      .grid-caption { font-size: 9px; }
+      .column-name { font-size: 12px; }
+      .grid-caption { font-size: 10px; }
       .coach-card { padding: 12px; }
-      .coach-card h2 { margin-top: 7px; font-size: 21px; }
-      .step-prompt { min-height: 38px; margin-bottom: 6px; font-size: 12px; }
-      .carry-tracker { margin-top: 6px; }
+      .coach-card h2 { margin-top: 8px; font-size: 25px; }
+      .step-prompt { min-height: 22px; margin-bottom: 7px; font-size: 15px; }
       .feedback-box { min-height: 42px; margin-top: 6px; padding: 6px 8px; }
       .coach-actions { padding-top: 6px; }
       .hint-button, .check-button { min-height: 39px; }
-      .keypad button { min-height: 38px; }
+      .keypad button { min-height: 40px; }
     }
     @media (max-width: 720px) {
       .practice-layout { grid-template-columns: 1fr; }
@@ -654,10 +654,10 @@
       </section>
 
       <aside class="coach-card" aria-labelledby="stepTitle">
-        <div class="step-top"><span id="phasePill" class="phase-pill">① 先乘十位</span><span id="stepCount" class="step-count">步驟 1 / 9</span></div>
-        <h2 id="stepTitle">先預留個位</h2>
-        <p id="stepPrompt" class="step-prompt">這一行是乘以整十數，先在個位方格填上合適的數字。</p>
-        <div class="thinking-card"><span>想一想</span><strong id="thinkingText">37 × 20 = ?</strong></div>
+        <div class="step-top"><span id="phasePill" class="phase-pill">① 先乘十位</span><span id="stepCount" class="step-count">1 / 9</span></div>
+        <h2 id="stepTitle">個位先填 0</h2>
+        <p id="stepPrompt" class="step-prompt">十位部分積的個位先填 0。</p>
+        <div class="thinking-card"><span>看算式</span><strong id="thinkingText">個位 → 0</strong></div>
 
         <div class="carry-tracker" aria-label="進位紀錄">
           <div class="tracker-title">進位小記錄</div>
@@ -666,11 +666,11 @@
           <div class="tracker-row"><span>相加進位</span><b id="trackAdd">—</b></div>
         </div>
 
-        <div id="feedbackBox" class="feedback-box" role="status" aria-live="polite"><span class="feedback-icon">✏️</span><span>按亮起的方格，填好後檢查這一步。</span></div>
+        <div id="feedbackBox" class="feedback-box" role="status" aria-live="polite"><span class="feedback-icon">✏️</span><span>填亮起的格，再按「檢查」。</span></div>
         <div id="hintBox" class="hint-box hidden"></div>
         <div class="coach-actions">
           <button id="hintButton" class="hint-button">💡 提示</button>
-          <button id="checkButton" class="check-button">檢查這一步</button>
+          <button id="checkButton" class="check-button">檢查</button>
         </div>
       </aside>
     </div>
@@ -835,55 +835,55 @@
         const steps = [
           {
             phase: "① 先乘十位",
-            title: "先預留個位",
-            prompt: `乘數的十位是 ${bTens}，代表 ${bTens * 10}。十位部分積的個位要預留位置。`,
-            thinking: `${a} × ${bTens * 10} = ?`,
-            hint: `因為這一行是乘以 ${bTens * 10}，部分積一定是整十數。想想整十數的個位是甚麼。`,
+            title: "個位先填 0",
+            prompt: "十位部分積的個位先填 0。",
+            thinking: "個位 → 0",
+            hint: "整十數的個位是 0。",
             markers: { numbers: ["nTens"], cells: [], carries: [] },
             targets: [target("p1-3", 0, "預留")]
           },
           {
             phase: "① 先乘十位",
-            title: `用 ${bTens} 乘被乘數的個位`,
-            prompt: `${bTens} × ${aUnits} 得到的個位寫在藍色部分積；進位填在乘數左方的藍色小格。`,
+            title: `${bTens} × ${aUnits}`,
+            prompt: "個位寫下，十位進位。",
             thinking: `${bTens} × ${aUnits} = ?`,
-            hint: `先算 ${bTens} × ${aUnits}。答案的個位寫入「十位部分積」的十位格；答案的十位填到乘數左方的小格。`,
+            hint: "個位寫下；十位放進位格。",
             markers: { numbers: ["nTens", "mUnits"], cells: [], carries: tensCarry ? ["carry-tens"] : [] },
             targets: [target("p1-2", tensFirst % 10, "寫下"), ...(tensCarry ? [target("carry-tens", tensCarry, "進位")] : [])]
           },
           {
             phase: "① 先乘十位",
-            title: `再用 ${bTens} 乘被乘數的十位`,
-            prompt: `別忘了加上剛才的進位 ${tensCarry}，把結果填在十位部分積餘下的方格。`,
+            title: `${bTens} × ${aTens} ＋ 進位`,
+            prompt: "完成藍色部分積。",
             thinking: `${bTens} × ${aTens} ＋ ${tensCarry} = ?`,
-            hint: `先算 ${bTens} × ${aTens}，再加進位 ${tensCarry}。如果答案有兩個數字，要由左至右填入兩格。`,
+            hint: "先乘，再加藍色進位。",
             markers: { numbers: ["nTens", "mTens"], cells: [], carries: tensCarry ? ["carry-tens"] : [] },
             targets: rightAlignedTargets("p1", tensLeft, 1, "寫下")
           },
           {
             phase: "② 再乘個位",
-            title: `用 ${bUnits} 乘被乘數的個位`,
-            prompt: `${bUnits} × ${aUnits} 的個位寫在橙色部分積；進位填在第二行部分積上方的小格。`,
+            title: `${bUnits} × ${aUnits}`,
+            prompt: "個位寫下，十位進位。",
             thinking: `${bUnits} × ${aUnits} = ?`,
-            hint: `先算 ${bUnits} × ${aUnits}。答案的個位寫入個位格；答案的十位填到橙色部分積十位格上方。`,
+            hint: "個位寫下；十位放進位格。",
             markers: { numbers: ["nUnits", "mUnits"], cells: [], carries: unitsCarry ? ["carry-units"] : [] },
             targets: [target("p2-3", unitsFirst % 10, "寫下"), ...(unitsCarry ? [target("carry-units", unitsCarry, "進位")] : [])]
           },
           {
             phase: "② 再乘個位",
-            title: `再用 ${bUnits} 乘被乘數的十位`,
-            prompt: `加上剛才的進位 ${unitsCarry}，完成個位部分積。`,
+            title: `${bUnits} × ${aTens} ＋ 進位`,
+            prompt: "完成橙色部分積。",
             thinking: `${bUnits} × ${aTens} ＋ ${unitsCarry} = ?`,
-            hint: `先算 ${bUnits} × ${aTens}，再加進位 ${unitsCarry}。把完整答案由左至右填入亮起的格。`,
+            hint: "先乘，再加橙色進位。",
             markers: { numbers: ["nUnits", "mTens"], cells: [], carries: unitsCarry ? ["carry-units"] : [] },
             targets: rightAlignedTargets("p2", unitsLeft, 2, "寫下")
           },
           {
             phase: "③ 最後相加",
-            title: "由個位開始相加",
-            prompt: "把兩行部分積的個位相加，填入總積的個位格。",
+            title: "個位相加",
+            prompt: "由最右邊開始。",
             thinking: `${p1Digits[3]} ＋ ${p2Digits[3]} = ?`,
-            hint: "相加要由最右邊的個位開始。這一欄沒有進位，只需把和填在最下面。",
+            hint: "上下兩個個位相加。",
             markers: { numbers: [], cells: ["p1-3", "p2-3"], carries: [] },
             targets: [target("sum-3", totalDigits[3], "寫下")]
           }
@@ -894,10 +894,10 @@
         addCarryToHundreds = Math.floor(tensSum / 10);
         steps.push({
           phase: "③ 最後相加",
-          title: "把十位相加",
-          prompt: "十位相加後，把個位數寫在綠色積的十位格；若滿十，進位填在加法橫線前的綠色小格。",
+          title: "十位相加",
+          prompt: "滿十要進位。",
           thinking: `${p1Digits[2]} ＋ ${p2Digits[2]} = ?`,
-          hint: "兩個十位數相加。和的個位寫在最下面；和的十位填到百位上方的綠色小格。",
+          hint: "上下十位相加；滿十要進位。",
           markers: { numbers: [], cells: ["p1-2", "p2-2"], carries: addCarryToHundreds ? ["addcarry-1"] : [] },
           targets: [target("sum-2", totalDigits[2], "寫下"), ...(addCarryToHundreds ? [target("addcarry-1", addCarryToHundreds, "進位")] : [])]
         });
@@ -906,10 +906,10 @@
         const addCarryToThousands = Math.floor(hundredsSum / 10);
         steps.push({
           phase: "③ 最後相加",
-          title: "把百位和進位相加",
-          prompt: `百位相加，再加上十位送來的綠色進位 ${addCarryToHundreds}。若再滿十，進位仍填在橫線前。`,
+          title: "百位相加",
+          prompt: "記得加綠色進位。",
           thinking: `${p1Digits[1]} ＋ ${p2Digits[1]} ＋ ${addCarryToHundreds} = ?`,
-          hint: `先把兩個百位相加，再加進位 ${addCarryToHundreds}。和的個位寫在百位格；若滿十便進到千位。`,
+          hint: "先加百位，再加綠色進位。",
           markers: { numbers: [], cells: ["p1-1", "p2-1"], carries: [...(addCarryToHundreds ? ["addcarry-1"] : []), ...(addCarryToThousands ? ["addcarry-0"] : [])] },
           targets: [target("sum-1", totalDigits[1], "寫下"), ...(addCarryToThousands ? [target("addcarry-0", addCarryToThousands, "進位")] : [])]
         });
@@ -918,10 +918,10 @@
         if (thousandsSum > 0) {
           steps.push({
             phase: "③ 最後相加",
-            title: "完成千位",
-            prompt: `把千位和百位送來的進位 ${addCarryToThousands} 相加，完成總積。`,
+            title: "最後：千位",
+            prompt: "加上最後的進位。",
             thinking: `${p1Digits[0]} ＋ ${p2Digits[0]} ＋ ${addCarryToThousands} = ?`,
-            hint: `這是最左的一欄。把千位加上進位 ${addCarryToThousands}，答案直接寫在積的千位格。`,
+            hint: "千位加綠色進位。",
             markers: { numbers: [], cells: ["p1-0", "p2-0"], carries: addCarryToThousands ? ["addcarry-0"] : [] },
             targets: [target("sum-0", totalDigits[0], "寫下")]
           });
@@ -1022,7 +1022,7 @@
         elements.progressFill.style.width = `${((state.questionIndex + state.stepIndex / state.steps.length) / TOTAL_QUESTIONS) * 100}%`;
         elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
         elements.phasePill.textContent = step.phase;
-        elements.stepCount.textContent = `步驟 ${state.stepIndex + 1} / ${state.steps.length}`;
+        elements.stepCount.textContent = `${state.stepIndex + 1} / ${state.steps.length}`;
         elements.stepTitle.textContent = step.title;
         elements.stepPrompt.textContent = step.prompt;
         elements.thinkingText.textContent = step.thinking;
@@ -1128,7 +1128,7 @@
           state.wrongCells = new Set();
           state.attempts += 1;
           state.activeCell = emptyTargets[0].id;
-          setFeedback("info", "👀", emptyTargets.length === 1 ? "還有一格未填，找找正在閃動的方格。" : `還有 ${emptyTargets.length} 格未填，完成後再檢查。`);
+          setFeedback("info", "👀", emptyTargets.length === 1 ? "還有 1 格未填。" : `還有 ${emptyTargets.length} 格未填。`);
           elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
           renderGrid();
           focusActiveCell();
@@ -1139,7 +1139,7 @@
         const wrongTargets = step.targets.filter((item) => state.values[item.id] !== item.value);
         if (wrongTargets.length) {
           state.activeCell = wrongTargets[0].id;
-          setFeedback("error", "🌱", wrongTargets.length === 1 ? "有一格需要再想一想。看看算式和位值，再試一次！" : `有 ${wrongTargets.length} 格需要再想一想。先分清「寫下」和「進位」。`);
+          setFeedback("error", "🌱", wrongTargets.length === 1 ? "再算一次。" : `有 ${wrongTargets.length} 格要再算。`);
           elements.accuracyChip.textContent = `準確率 ${accuracy()}%`;
           markWrongCells(wrongTargets.map((item) => item.id));
           playTone(false);
@@ -1151,7 +1151,7 @@
         state.wrongCells = new Set();
         state.transitioning = true;
         step.targets.forEach((item) => state.locked.add(item.id));
-        setFeedback("success", "✅", "這一步正確！準備進入下一步。進位也記錄好了。");
+        setFeedback("success", "✅", "答對！下一步。");
         playTone(true);
         renderGrid();
         renderTrackers();
@@ -1163,7 +1163,7 @@
             state.transitioning = false;
             state.activeCell = currentStep().targets[0].id;
             render();
-            setFeedback("", "✏️", "按亮起的方格，填好後檢查這一步。");
+            setFeedback("", "✏️", "填亮起的格，再按「檢查」。");
             focusActiveCell();
           } else {
             completeQuestion();
@@ -1231,7 +1231,7 @@
         elements.resultOverlay.classList.add("hidden");
         elements.practiceScreen.classList.remove("hidden");
         setQuestion();
-        setFeedback("", "✏️", "按亮起的方格，填好後檢查這一步。");
+        setFeedback("", "✏️", "填亮起的格，再按「檢查」。");
       }
 
       $$(".level-card").forEach((button) => {
@@ -1304,7 +1304,7 @@
         } else {
           state.questionIndex += 1;
           setQuestion();
-          setFeedback("", "✏️", "新一題開始！按亮起的方格逐步完成直式。");
+          setFeedback("", "✏️", "新一題，開始！");
         }
       });
 
