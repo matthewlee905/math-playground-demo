@@ -541,6 +541,28 @@
       .result-stat { display: flex; justify-content: space-between; align-items: center; }
       .result-stat span { margin: 0; }
     }
+    @media (min-width: 721px) and (max-height: 700px) {
+      :root { --cell: 39px; }
+      .practice-screen { padding-top: 5px; padding-bottom: 5px; }
+      .topbar { margin-bottom: 3px; }
+      .board-card, .coach-card { padding: 7px 10px; }
+      .progress-row { margin-bottom: 3px; }
+      .problem-heading .eyebrow, .problem-heading p { display: none; }
+      .problem-heading h2 { margin-bottom: 1px; font-size: 27px; line-height: 1.05; }
+      .sum-grid { row-gap: 1px; }
+      .grid-number, .entry-wrap input { font-size: 32px; line-height: 1; }
+      .entry-wrap input { padding: 0; -webkit-appearance: none; appearance: none; }
+      .entry-wrap.carry-cell input { font-size: 16px; }
+      .grid-caption { margin-top: 1px; font-size: 10px; line-height: 1.15; }
+      .keypad { margin-top: 4px; }
+      .keypad button { min-height: 36px; }
+    }
+    @media (min-width: 721px) and (max-height: 620px) {
+      :root { --cell: 34px; }
+      .grid-number, .entry-wrap input { font-size: 28px; }
+      .entry-wrap.carry-cell input { font-size: 14px; }
+      .grid-caption { display: none; }
+    }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
     }
@@ -1053,8 +1075,10 @@
         if (!targets.some((item) => item.id === state.activeCell)) chooseNextEmptyCell();
         state.values[state.activeCell] = String(digit).slice(-1);
         state.wrongCells.delete(state.activeCell);
-        const index = targets.findIndex((item) => item.id === state.activeCell);
-        const next = targets.slice(index + 1).find((item) => !state.values[item.id]);
+        // A carry and its answer belong to the same calculation.  After a pupil
+        // fills either square, move to whichever required square is still empty.
+        // This supports both "answer first" and "carry first" working habits.
+        const next = targets.find((item) => !state.values[item.id]);
         if (next) state.activeCell = next.id;
         renderGrid();
         focusActiveCell();
